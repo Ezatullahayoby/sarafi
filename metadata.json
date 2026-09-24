@@ -1,0 +1,8 @@
+{
+  "name": "Remix سیستم حسابداری و معاملات صرافی",
+  "description": "سامانه جامع و یکپارچه مدیریت معاملات ارزی، حسابداری صرافی، تومان نقدی و بانکی، بلانس و روزنامچه",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "entities": {
+    "Customer": {
+      "title": "Customer",
+      "description": "Exchange client entity for permanent or transient customers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 200 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "type": { "type": "string", "enum": ["permanent", "transient"] },
+        "address": { "type": "string", "maxLength": 500 },
+        "notes": { "type": "string", "maxLength": 1000 },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "name", "type"]
+    },
+    "CustomerAccountEntry": {
+      "title": "CustomerAccountEntry",
+      "description": "Financial ledger entry for customer receipts and bards",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "customerId": { "type": "string", "maxLength": 128 },
+        "date": { "type": "string", "maxLength": 20 },
+        "time": { "type": "string", "maxLength": 20 },
+        "type": { "type": "string", "maxLength": 50 },
+        "entryCategory": { "type": "string", "enum": ["receipt", "bard"] },
+        "currencyCode": { "type": "string", "maxLength": 20 },
+        "debit": { "type": "number" },
+        "credit": { "type": "number" },
+        "description": { "type": "string", "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "createdAt": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id", "customerId", "currencyCode"]
+    },
+    "Bank": {
+      "title": "Bank",
+      "description": "Exchange bank account",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 200 },
+        "accountNumber": { "type": "string", "maxLength": 100 },
+        "initialBalance": { "type": "number" }
+      },
+      "required": ["id", "name"]
+    },
+    "BankTransaction": {
+      "title": "BankTransaction",
+      "description": "Bank transaction deposit or withdrawal",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "bankId": { "type": "string", "maxLength": 128 },
+        "type": { "type": "string", "enum": ["deposit", "withdrawal"] },
+        "amount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "date": { "type": "string", "maxLength": 20 },
+        "time": { "type": "string", "maxLength": 20 }
+      },
+      "required": ["id", "bankId", "type", "amount"]
+    },
+    "Trade": {
+      "title": "Trade",
+      "description": "Currency buy or sell exchange transaction",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "tradeNumber": { "type": "string", "maxLength": 50 },
+        "type": { "type": "string", "enum": ["buy", "sell"] },
+        "currencyCode": { "type": "string", "maxLength": 20 },
+        "amount": { "type": "number" },
+        "rate": { "type": "number" },
+        "settlementCurrency": { "type": "string", "maxLength": 20 },
+        "totalSettlementAmount": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected"] },
+        "date": { "type": "string", "maxLength": 20 }
+      },
+      "required": ["id", "tradeNumber", "type", "currencyCode", "amount"]
+    },
+    "AccountPeriod": {
+      "title": "AccountPeriod",
+      "description": "Settled and archived customer account period",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "customerId": { "type": "string", "maxLength": 128 },
+        "periodNumber": { "type": "number" },
+        "startDate": { "type": "string", "maxLength": 20 },
+        "endDate": { "type": "string", "maxLength": 20 }
+      },
+      "required": ["id", "customerId", "periodNumber"]
+    },
+    "ExchangeSetting": {
+      "title": "ExchangeSetting",
+      "description": "General system configuration and settings",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "exchangeName": { "type": "string", "maxLength": 200 },
+        "phone": { "type": "string", "maxLength": 50 }
+      },
+      "required": ["id"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Exchange user account with hashed password and permissions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "username": { "type": "string", "maxLength": 100 },
+        "name": { "type": "string", "maxLength": 200 },
+        "role": { "type": "string", "enum": ["admin", "employee", "user"] },
+        "status": { "type": "string", "enum": ["active", "inactive"] }
+      },
+      "required": ["id", "username", "role"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "User activity and audit trail log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "timestamp": { "type": "string", "maxLength": 50 },
+        "userName": { "type": "string", "maxLength": 200 },
+        "action": { "type": "string", "maxLength": 50 },
+        "details": { "type": "string", "maxLength": 1000 }
+      },
+      "required": ["id", "action"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Collection of exchange users"
+    },
+    "/audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "User activity audit logs"
+    },
+    "/customers/{customerId}": {
+      "schema": "Customer",
+      "description": "Collection of exchange customers"
+    },
+    "/customer_entries/{entryId}": {
+      "schema": "CustomerAccountEntry",
+      "description": "Collection of customer ledger entries"
+    },
+    "/banks/{bankId}": {
+      "schema": "Bank",
+      "description": "Collection of exchange banks"
+    },
+    "/bank_transactions/{txId}": {
+      "schema": "BankTransaction",
+      "description": "Collection of bank transactions"
+    },
+    "/trades/{tradeId}": {
+      "schema": "Trade",
+      "description": "Collection of currency exchange trades"
+    },
+    "/account_periods/{periodId}": {
+      "schema": "AccountPeriod",
+      "description": "Archived settlement periods"
+    },
+    "/settings/{settingId}": {
+      "schema": "ExchangeSetting",
+      "description": "System settings and preferences"
+    }
+  }
+}

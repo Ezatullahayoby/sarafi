@@ -1,0 +1,84 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-\\.:]+$');
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connection test document
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+
+    // System Users & Permissions
+    match /users/{userId} {
+      allow read: if true;
+      allow write: if isValidId(userId);
+    }
+
+    // Exchange Customers
+    match /customers/{customerId} {
+      allow read: if true;
+      allow write: if isValidId(customerId);
+    }
+
+    // Customer Account Entries (Ledger)
+    match /customer_entries/{entryId} {
+      allow read: if true;
+      allow write: if isValidId(entryId);
+    }
+
+    // Banks
+    match /banks/{bankId} {
+      allow read: if true;
+      allow write: if isValidId(bankId);
+    }
+
+    // Bank Transactions
+    match /bank_transactions/{txId} {
+      allow read: if true;
+      allow write: if isValidId(txId);
+    }
+
+    // Currency Exchange Trades
+    match /trades/{tradeId} {
+      allow read: if true;
+      allow write: if isValidId(tradeId);
+    }
+
+    // Account Periods (Historical Archives)
+    match /account_periods/{periodId} {
+      allow read: if true;
+      allow write: if isValidId(periodId);
+    }
+
+    // Currencies & Rates
+    match /currencies/{currencyId} {
+      allow read: if true;
+      allow write: if isValidId(currencyId);
+    }
+
+    // Cash Balances (Physical Cashbox)
+    match /cash_balances/{balanceId} {
+      allow read: if true;
+      allow write: if isValidId(balanceId);
+    }
+
+    // Audit Logs
+    match /audit_logs/{logId} {
+      allow read: if true;
+      allow write: if isValidId(logId);
+    }
+
+    // System Settings
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isValidId(settingId);
+    }
+  }
+}

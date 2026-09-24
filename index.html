@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <script>
+      (function() {
+        try {
+          // Safeguard for iframe environments where window.fetch is getter-only:
+          // Ensure window.fetch has both a getter and a setter so external instrumentation or proxies don't throw TypeError
+          var originalFetch = typeof window !== 'undefined' && typeof window.fetch === 'function'
+            ? window.fetch.bind(window)
+            : undefined;
+          var _fetch = originalFetch;
+
+          try {
+            Object.defineProperty(window, 'fetch', {
+              get: function() {
+                return _fetch;
+              },
+              set: function(val) {
+                _fetch = val;
+              },
+              configurable: true,
+              enumerable: true
+            });
+          } catch (e1) {
+            if (typeof Window !== 'undefined' && Window.prototype) {
+              try {
+                Object.defineProperty(Window.prototype, 'fetch', {
+                  get: function() {
+                    return _fetch;
+                  },
+                  set: function(val) {
+                    _fetch = val;
+                  },
+                  configurable: true,
+                  enumerable: true
+                });
+              } catch (e2) {}
+            }
+          }
+
+          // Error event suppression if any script still triggers "Cannot set property fetch"
+          window.addEventListener('error', function(e) {
+            if (e && e.message && e.message.indexOf('Cannot set property fetch') !== -1) {
+              if (e.preventDefault) e.preventDefault();
+              if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+              return true;
+            }
+          }, true);
+        } catch (err) {}
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Remix سیستم حسابداری و معاملات صرافی</title>
+    <meta name="description" content="سامانه جامع و یکپارچه مدیریت معاملات ارزی، حسابداری صرافی، تومان نقدی و بانکی، بلانس و روزنامچه" />
+    <meta property="og:title" content="Remix سیستم حسابداری و معاملات صرافی" />
+    <meta property="og:description" content="سامانه جامع و یکپارچه مدیریت معاملات ارزی، حسابداری صرافی، تومان نقدی و بانکی، بلانس و روزنامچه" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  </head>
+  <body class="font-sans antialiased bg-slate-50 text-slate-900 selection:bg-emerald-500 selection:text-white min-h-screen">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
